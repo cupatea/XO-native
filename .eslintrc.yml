@@ -1,8 +1,10 @@
 env:
   es6: true
+  jest/globals: true
 extends:
   - airbnb
   - react-native
+  - 'plugin:jest/recommended'
 parserOptions:
   sourceType: module
   ecmaFeatures:
@@ -12,32 +14,38 @@ plugins:
   - react
   - jsx-a11y
   - import
+  - jest
 rules:
   indent:
-  - error
-  - 2
+    - error
+    - 2
   linebreak-style:
-  - error
-  - unix
+    - error
+    - unix
   quotes:
-  - error
-  - single
+    - error
+    - single
   semi:
-  - error
-  - never
-  react/jsx-filename-extension:
-  - 1
-  - extensions:
-    - ".js"
-    - ".jsx"
-  react/jsx-curly-spacing:
-  - 2
-  - when: always
-    spacing:
-      objectLiterals: never
-  react/jsx-equals-spacing:
-  - 2
-  - always
+    - error
+    - never
+  spacing:
+    objectLiterals: never
   jsx-quotes:
     - error
     - prefer-single
+  react/jsx-equals-spacing:
+    - 2
+    - always
+  react/jsx-curly-spacing:
+    - 2
+    - when: always
+  react/jsx-filename-extension:
+    - 1
+    - extensions:
+      - ".js"
+      - ".jsx"
+  jest/no-disabled-tests: warn
+  jest/no-focused-tests: error
+  jest/no-identical-title: error
+  jest/prefer-to-have-length: warn
+  jest/valid-expect: error
