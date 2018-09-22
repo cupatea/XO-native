@@ -36,11 +36,7 @@ export class AppProvider extends React.Component {
   }
 
   static findBestCell(field) {
-    const availableCells =
-      AppProvider.findAvalibleCells(field)
-
-    // Take the first avalible cell
-    return availableCells[0]
+    return AppProvider.minMax({ field, targetPlayer: 'O'}).cell
   }
 
   static checkWinner({ field, targetPlayer }) {
@@ -62,21 +58,92 @@ export class AppProvider extends React.Component {
     if (isWinner) {
       return ({
         winner: targetPlayer === 'X' ? 'Win!' : 'Lose',
-        gameOver: true
+        gameOver: true,
+        win: true
       })
     }
 
     if (!isWinner && availableCells.length === 0) {
       return ({
         winner: 'Draw!',
-        gameOver: true
+        gameOver: true,
+        win: false
       })
     }
 
     return ({
       winner: null,
-      gameOver: false
+      gameOver: false,
+      win: false
     })
+  }
+
+  static minMax = ({field, targetPlayer}) => {
+    const newField = [...field]
+    const avalibleCells = AppProvider.findAvalibleCells(newField)
+
+    if (AppProvider.checkWinner({ field: newField, targetPlayer: 'X' }).win) {
+      return { score: -10 }
+    }
+    if (AppProvider.checkWinner({ field: newField, targetPlayer: 'O' }).win) {
+      return { score: 10 }
+    }
+    if (avalibleCells.length === 0) {
+      return { score: 0 }
+    }
+
+    const moves = avalibleCells.forEach(cell => {
+      const move = { cell }
+      const turnField = newField.map(element => {
+        if (element.position ===  cell.position) {
+          return ({
+            ...element,
+            player: targetPlayer
+          })
+        }
+        return element
+      })
+
+      if (targetPlayer === 'O') {
+        const result =
+          AppProvider.minMax({
+            field: turnField,
+            targetPlayer: 'X'
+          })
+        move.score = result.score
+      }
+      if (targetPlayer === 'X') {
+        const result =
+          AppProvider.minMax({
+            field: turnField,
+            targetPlayer: 'O'
+          })
+        move.score = result.score
+      }
+      return move
+    })
+
+    let bestMove
+
+    if (targetPlayer === 'O') {
+      let bestScore = -10000
+      moves.forEach(move => {
+        if (move.score > bestScore) {
+          bestScore = move.score
+          bestMove = move
+        }
+      })
+    }
+    if (targetPlayer === 'X') {
+      let bestScore = 10000
+      moves.forEach(move => {
+        if (move.score < bestScore) {
+          bestScore = move.score
+          bestMove = move
+        }
+      })
+    }
+    return bestMove
   }
 
   constructor(props) {
