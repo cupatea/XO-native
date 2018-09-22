@@ -92,7 +92,7 @@ export class AppProvider extends React.Component {
       return { score: 0 }
     }
 
-    const moves = avalibleCells.forEach(cell => {
+    const moves = avalibleCells.map(cell => {
       const move = { cell }
       const turnField = newField.map(element => {
         if (element.position ===  cell.position) {
