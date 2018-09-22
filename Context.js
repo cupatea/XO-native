@@ -1,6 +1,9 @@
 import React from 'react'
-
 import PropTypes from 'prop-types'
+import checkWinner from './actions/checkWinner'
+import findBestCell from './actions/findBestCell'
+import findRandomCell from './actions/findRandomCell'
+
 
 const defaultField = [
   { player: null, position: 'A1', row: 1 },
@@ -13,150 +16,33 @@ const defaultField = [
   { player: null, position: 'B3', row: 3 },
   { player: null, position: 'C3', row: 3 },
 ]
-const winCombinations =[
-  ['A1', 'A2', 'A3'],
-  ['B1', 'B2', 'B3'],
-  ['C1', 'C2', 'C3'],
-  ['A1', 'B1', 'C1'],
-  ['A2', 'B2', 'C2'],
-  ['A3', 'B3', 'C3'],
-  ['A1', 'B2', 'C3'],
-  ['A3', 'B2', 'C1'],
-]
 
 const defaultState = {
   field: defaultField,
   gameOver: false,
+  fieldIsActive: true,
+  lastMove: null,
 }
 const AppContext = React.createContext()
 export class AppProvider extends React.Component {
-
-  static findAvalibleCells(field) {
-    return field.filter(cell => cell.player !== 'X' && cell.player !== 'O')
-  }
-
-  static findBestCell(field) {
-    return AppProvider.minMax({ field, targetPlayer: 'O'}).cell
-  }
-
-  static checkWinner({ field, targetPlayer }) {
-    const availableCells =
-      AppProvider.findAvalibleCells(field)
-
-    const targetPlayerMoves = field
-      .filter(cell => cell.player === targetPlayer)
-      .map(cell => cell.position)
-
-    let isWinner = false
-    winCombinations.forEach((combination) => {
-      if (combination.every(element => targetPlayerMoves.includes(element))) {
-        isWinner = true
-        return
-      }
-    })
-
-    if (isWinner) {
-      return ({
-        winner: targetPlayer === 'X' ? 'Win!' : 'Lose',
-        gameOver: true,
-        win: true
-      })
-    }
-
-    if (!isWinner && availableCells.length === 0) {
-      return ({
-        winner: 'Draw!',
-        gameOver: true,
-        win: false
-      })
-    }
-
-    return ({
-      winner: null,
-      gameOver: false,
-      win: false
-    })
-  }
-
-  static minMax = ({field, targetPlayer}) => {
-    const newField = [...field]
-    const avalibleCells = AppProvider.findAvalibleCells(newField)
-
-    if (AppProvider.checkWinner({ field: newField, targetPlayer: 'X' }).win) {
-      return { score: -10 }
-    }
-    if (AppProvider.checkWinner({ field: newField, targetPlayer: 'O' }).win) {
-      return { score: 10 }
-    }
-    if (avalibleCells.length === 0) {
-      return { score: 0 }
-    }
-
-    const moves = avalibleCells.map(cell => {
-      const move = { cell }
-      const turnField = newField.map(element => {
-        if (element.position ===  cell.position) {
-          return ({
-            ...element,
-            player: targetPlayer
-          })
-        }
-        return element
-      })
-
-      if (targetPlayer === 'O') {
-        const result =
-          AppProvider.minMax({
-            field: turnField,
-            targetPlayer: 'X'
-          })
-        move.score = result.score
-      }
-      if (targetPlayer === 'X') {
-        const result =
-          AppProvider.minMax({
-            field: turnField,
-            targetPlayer: 'O'
-          })
-        move.score = result.score
-      }
-      return move
-    })
-
-    let bestMove
-
-    if (targetPlayer === 'O') {
-      let bestScore = -10000
-      moves.forEach(move => {
-        if (move.score > bestScore) {
-          bestScore = move.score
-          bestMove = move
-        }
-      })
-    }
-    if (targetPlayer === 'X') {
-      let bestScore = 10000
-      moves.forEach(move => {
-        if (move.score < bestScore) {
-          bestScore = move.score
-          bestMove = move
-        }
-      })
-    }
-    return bestMove
-  }
 
   constructor(props) {
     super(props)
     this.state = defaultState
   }
 
-  componentDidUpdate(_, prevState) {
-    const { lastMove, gameOver, field } = this.state
-    if(prevState.lastMove !== lastMove && !gameOver && lastMove.player === 'X') {
+  componentDidUpdate(_, prevProps) {
+    const { gameOver, fieldIsActive, field} = this.state
+    if(prevProps.lastMove && !fieldIsActive && !gameOver) {
       this.handleTurn({
         targetPlayer: 'O',
-        targetCell: AppProvider.findBestCell(field),
+        targetCell: findBestCell(field),
+      })
+    }
+    if(!prevProps.lastMove && !fieldIsActive && !gameOver) {
+      this.handleTurn({
+        targetPlayer: 'O',
+        targetCell: findRandomCell(field),
       })
     }
   }
@@ -177,7 +63,7 @@ export class AppProvider extends React.Component {
       return cell
     })
     const { winner, gameOver } =
-      AppProvider.checkWinner({ field: updatedField, targetPlayer })
+      checkWinner({ field: updatedField, targetPlayer })
 
     this.setState({
       field: updatedField,
@@ -187,6 +73,7 @@ export class AppProvider extends React.Component {
       },
       winner,
       gameOver,
+      fieldIsActive: targetPlayer === 'O',
     })
   }
 

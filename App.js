@@ -43,7 +43,7 @@ export default class App extends React.Component  {
                   { App.renderWinner(state.gameOver, state.winner) }
                   <Field
                     action = { functions.onTurn }
-                    fieldIsActive = { !state.gameOver }
+                    fieldIsActive = { state.fieldIsActive && !state.gameOver }
                     field = { state.field }
                   />
                   <Button
