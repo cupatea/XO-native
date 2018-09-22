@@ -1,0 +1,3 @@
+rootProject.name = 'xo_reactnative'
+
+include ':app'

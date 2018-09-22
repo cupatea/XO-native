@@ -1,5 +1,7 @@
 {
   "expo": {
     "sdkVersion": "27.0.0"
-  }
+  },
+  "name": "xo_reactnative",
+  "displayName": "XO-native"
 }
