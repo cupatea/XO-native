@@ -3,15 +3,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const defaultField = [
-  { player: '', position: 'A1', row: 1 },
-  { player: '', position: 'B1', row: 1 },
-  { player: '', position: 'C1', row: 1 },
-  { player: '', position: 'A2', row: 2 },
-  { player: '', position: 'B2', row: 2 },
-  { player: '', position: 'C2', row: 2 },
-  { player: '', position: 'A3', row: 3 },
-  { player: '', position: 'B3', row: 3 },
-  { player: '', position: 'C3', row: 3 },
+  { player: null, position: 'A1', row: 1 },
+  { player: null, position: 'B1', row: 1 },
+  { player: null, position: 'C1', row: 1 },
+  { player: null, position: 'A2', row: 2 },
+  { player: null, position: 'B2', row: 2 },
+  { player: null, position: 'C2', row: 2 },
+  { player: null, position: 'A3', row: 3 },
+  { player: null, position: 'B3', row: 3 },
+  { player: null, position: 'C3', row: 3 },
 ]
 const winCombinations =[
   ['A1', 'A2', 'A3'],
@@ -21,7 +21,7 @@ const winCombinations =[
   ['A2', 'B2', 'C2'],
   ['A3', 'B3', 'C3'],
   ['A1', 'B2', 'C3'],
-  ['C1', 'B2',' A3'],
+  ['A3', 'B2', 'C1'],
 ]
 
 const defaultState = {
@@ -30,9 +30,11 @@ const defaultState = {
 }
 const AppContext = React.createContext()
 export class AppProvider extends React.Component {
+
   static findAvalibleCells(field) {
     return field.filter(cell => cell.player !== 'X' && cell.player !== 'O')
   }
+
   static findBestCell(field) {
     const availableCells =
       AppProvider.findAvalibleCells(field)
