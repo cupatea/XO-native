@@ -47,7 +47,7 @@ export default class App extends React.Component  {
                     field = { state.field }
                   />
                   <Button
-                    text = 'Restart Game!'
+                    text = { state.gameOver ? 'Restart Game!' : state.aiPhrase }
                     action = { functions.onResetField }
                   />
                 </React.Fragment>

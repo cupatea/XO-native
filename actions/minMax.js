@@ -6,10 +6,10 @@ export default function minMax({field, targetPlayer}) {
   const avalibleCells = findAvalibleCells(newField)
 
   if (checkWinner({ field: newField, targetPlayer: 'X' }).win) {
-    return { score: -10 }
+    return { score: -100 }
   }
   if (checkWinner({ field: newField, targetPlayer: 'O' }).win) {
-    return { score: 10 }
+    return { score: 100 }
   }
   if (avalibleCells.length === 0) {
     return { score: 0 }
@@ -49,7 +49,7 @@ export default function minMax({field, targetPlayer}) {
   let bestMove
 
   if (targetPlayer === 'O') {
-    let bestScore = -10000
+    let bestScore = -1000
     moves.forEach(move => {
       if (move.score > bestScore) {
         bestScore = move.score
@@ -58,7 +58,7 @@ export default function minMax({field, targetPlayer}) {
     })
   }
   if (targetPlayer === 'X') {
-    let bestScore = 10000
+    let bestScore = 1000
     moves.forEach(move => {
       if (move.score < bestScore) {
         bestScore = move.score

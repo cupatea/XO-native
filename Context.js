@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import checkWinner from './actions/checkWinner'
-import findBestCell from './actions/findBestCell'
+import findBestMove from './actions/findBestMove'
 import findRandomCell from './actions/findRandomCell'
 
 
@@ -22,6 +22,7 @@ const defaultState = {
   gameOver: false,
   fieldIsActive: true,
   lastMove: null,
+  aiPhrase: 'AI: Lets play!',
 }
 const AppContext = React.createContext()
 export class AppProvider extends React.Component {
@@ -33,22 +34,41 @@ export class AppProvider extends React.Component {
 
   componentDidUpdate(_, prevProps) {
     const { gameOver, fieldIsActive, field} = this.state
-    if(prevProps.lastMove && !fieldIsActive && !gameOver) {
-      this.handleTurn({
-        targetPlayer: 'O',
-        targetCell: findBestCell(field),
-      })
-    }
-    if(!prevProps.lastMove && !fieldIsActive && !gameOver) {
-      this.handleTurn({
-        targetPlayer: 'O',
-        targetCell: findRandomCell(field),
-      })
+    if(!fieldIsActive && !gameOver) {
+      this.aiTurn(field, prevProps.lastMove)
     }
   }
 
   handleResetField() {
     this.setState(defaultState)
+  }
+
+  aiTurn(field, lastMove) {
+    let targetCell, aiPhrase
+    if (lastMove) {
+      const bestMove = findBestMove(field)
+      targetCell = bestMove.cell
+      if (bestMove.score === 100) {
+        aiPhrase = 'AI: Winter is coming!'
+      }
+      if (bestMove.score === 0) {
+        aiPhrase = 'AI: You know nothing Jon Snow'
+      }
+      if (bestMove.score === -100) {
+        aiPhrase = 'AI: Hodor!'
+      }
+    } else {
+      targetCell = findRandomCell(field)
+      aiPhrase = 'AI: Hmm...'
+    }
+
+    this.handleTurn({
+      targetPlayer: 'O',
+      targetCell,
+    })
+    this.setState({
+      aiPhrase
+    })
   }
 
   handleTurn({ targetPlayer, targetCell }){
