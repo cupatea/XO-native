@@ -5,10 +5,11 @@ import { Button as DefaultButton } from 'react-native'
 export default function Button({text, action}) {
   return(
     <DefaultButton
-      onPress = { action }
+      onPress = { () => action() }
       title = { text }
       color = '#DA3D4D'
       accessibilityLabel = { text }
+      zIndex = { 2 } 
     />
   )
 }
