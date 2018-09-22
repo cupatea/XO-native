@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { StyleSheet, TouchableHighlight, View, Text } from 'react-native'
 
 
-const $coolBlack = '#292929'
-const $coolWhite = 'white'
+const $colorBlack = '#292929'
+const $colorWhite = 'white'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -25,8 +25,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 3,
+    paddingTop: 4,
     borderWidth: 1,
-    borderColor: $coolBlack,
+    borderColor: $colorBlack,
   },
   text: {
     fontSize: 80,
@@ -42,7 +43,7 @@ export default class Field extends React.Component {
     return(
       <TouchableHighlight
         style = { styles.element }
-        underlayColor = { $coolWhite }
+        underlayColor = { $colorWhite }
         key = { element.position }
         onPress = { () => action({ targetPlayer: 'X', targetCell: element }) }
       >

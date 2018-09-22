@@ -7,11 +7,12 @@ import Field from './components/Field'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20
+    marginTop: 20,
+    marginBottom: 5
   },
   text: {
     position: 'absolute',
-    top: '4%',
+    top: 0,
     margin: 0,
     width: '100%',
     textAlign: 'center',
@@ -39,15 +40,15 @@ export default class App extends React.Component  {
             {
               ({ state, functions }) => (
                 <React.Fragment>
-                  <Button
-                    text = 'Restart Game!'
-                    action = { functions.onResetField }
-                  />
                   { App.renderWinner(state.gameOver, state.winner) }
                   <Field
                     action = { functions.onTurn }
                     fieldIsActive = { !state.gameOver }
                     field = { state.field }
+                  />
+                  <Button
+                    text = 'Restart Game!'
+                    action = { functions.onResetField }
                   />
                 </React.Fragment>
               )
