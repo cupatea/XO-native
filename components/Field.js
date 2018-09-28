@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
   }
 })
 
-
 export default class Field extends React.Component {
 
   renderActiveCell(element) {
